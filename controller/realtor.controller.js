@@ -1,6 +1,6 @@
 const { RealtorCreator } = require('../config/datasaver.config')
 const { realtorEmailExists, realtorPhoneExists } = require('../utils/existenceChecker')
-const { passwordHasher, salt } = require('../utils/general')
+const { passwordHasher, salt, passwordCompare, createdToken } = require('../utils/general')
 const { emailValidator, phoneValidator, passwordValidator } = require('../utils/validator')
 
 const createRealtor = async (req, res) => {
@@ -45,4 +45,35 @@ const createRealtor = async (req, res) => {
   }
 }
 
-module.exports = { createRealtor }
+const loginRealtor = async (req, res) => {
+  const { email, phone, password } = req.body
+  try {
+    
+    // =================== VALIADTING USER INPUTS ===================== //
+    if(!email && !phone) return res.status(402).json({error: 'Please enter your email address or phone number here', success: false})
+
+    if(!password) return res.status(402).json({error: 'Please enter your password to login to your account', success: false})
+
+    if(email && phone) return res.status(402).json({error: 'Dear user, kindly login through the require portal as you can\'t input email and phone number together', success: false})
+
+    const isEmail = await realtorEmailExists(email)
+    const isPhone = await realtorPhoneExists(phone)
+
+    const theRealtor = isEmail || isPhone
+
+    if(!theRealtor) return res.status(402).json({error: 'invalid credentials', success: false})
+
+    const isPasswordCorrect = await passwordCompare(password, theRealtor.password)
+    if(!isPasswordCorrect) return res.status(402).json({error: 'invalid credentials', success: false})
+
+    // ======================== SENDING COOOKIE TO BROWSER ======================== //
+    const token = createdToken(theRealtor._id)
+    res.cookie('realtor', token, { httpOnly: true, maxAge: 1000*60*60*24*3 })
+    res.status(201).json({message: "Login successful", success: true})
+
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
+module.exports = { createRealtor, loginRealtor }
