@@ -6,6 +6,8 @@ const realtorAuthouriser = async (req, res, next) => {
   try {
     
     // ================= BREAKING DOWN COOKIE TO IDENTIFY SENDER ======================== //
+    if(!cookie) return res.status(402).json({error: 'Please login to perform this operation', success: false})
+    
     const isRealtor = cookie.split("=")[0]
     const realtorCookie = cookie.split("=")[1]
 
@@ -29,6 +31,8 @@ const realtorIdentifier = async (req, res, next) => {
   try {
     
     // ===================== GETTING REALTOR IDENTITY FROM THE DATABASE ======================== //
+    if(!id) return res.status(401).json({error: 'an error occur while trying to authenticate you, kindly login and try again', success: false})
+    
     const realtor = await gettingRealtorById(id)
     
     req.realtor = realtor._id

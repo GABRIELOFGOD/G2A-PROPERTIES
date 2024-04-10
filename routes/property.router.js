@@ -1,8 +1,17 @@
+const multer = require('multer')
 const { realtorAuthouriser, realtorIdentifier } = require('../middleware/realtor.middleware')
 const { postProperty } = require('../controller/property.controller')
 
 const router = require('express').Router()
 
-router.post('/post', realtorAuthouriser, realtorIdentifier, postProperty)
+const storage = multer.diskStorage({
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`)
+  }
+})
+
+const upload = multer({storage})
+
+router.post('/post', upload.array('file'), realtorAuthouriser, realtorIdentifier, postProperty)
 
 module.exports = router
