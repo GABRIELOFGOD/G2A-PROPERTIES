@@ -10,7 +10,7 @@ const realtorSchema = new mongoose.Schema({
       type: mongoose.Types.ObjectId,
       ref: 'Property'
     }]
-});
+},{timestamps: true});
 
 //Export the model
 const Realtor = mongoose.model('Realtor', realtorSchema);

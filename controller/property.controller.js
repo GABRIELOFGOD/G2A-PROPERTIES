@@ -47,4 +47,13 @@ const postProperty = async (req, res) => {
   }
 }
 
-module.exports = { postProperty };
+const getAllProperties = async (req, res) => {
+  try {
+    
+    
+  } catch (err) {
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+  }
+}
+
+module.exports = { postProperty, getAllProperties };

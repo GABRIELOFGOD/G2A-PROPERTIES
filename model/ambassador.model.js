@@ -9,7 +9,7 @@ const ambassadorSchema = new mongoose.Schema({
     address:String,
     what_to_offer:String,
     social_media:String
-});
+},{timestamps: true});
 
 //Export the model
 const Ambassador = mongoose.model('Ambassador', ambassadorSchema);

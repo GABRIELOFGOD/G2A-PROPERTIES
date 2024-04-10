@@ -7,6 +7,7 @@ require('dotenv').config()
 const ambassadorRouter = require('./routes/ambassador.router')
 const realtorRouter = require('./routes/realtor.router')
 const propertyRouter = require('./routes/property.router')
+const newsletterRouter = require('./routes/newsletter.router')
 
 // ================= CONFIGURATIONS ================== //
 const databaseConnection = require('./config/database.config')
@@ -26,6 +27,7 @@ databaseConnection()
 app.use('/ambassador', ambassadorRouter)
 app.use('/realtor', realtorRouter)
 app.use('/property', propertyRouter)
+app.use('/newsletter', newsletterRouter)
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`)

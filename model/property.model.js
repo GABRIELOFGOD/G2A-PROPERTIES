@@ -14,7 +14,7 @@ const propertySchema = new mongoose.Schema({
       type: mongoose.Types.ObjectId,
       ref: 'Realtor'
     }
-});
+},{timestamps: true});
 
 const Property = mongoose.model('Property', propertySchema);
 module.exports = Property
