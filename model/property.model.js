@@ -10,11 +10,30 @@ const propertySchema = new mongoose.Schema({
     square_meter: Number,
     parking_lot: Number,
     number_of_bedroom: Number,
+    status: {
+      type: String,
+      default: 'listed'
+    },
     postedBy:{
       type: mongoose.Types.ObjectId,
       ref: 'Realtor'
     }
 },{timestamps: true});
 
+const propertyInspectionSchema = new mongoose.Schema({
+  name:String,
+  time: String,
+  date: Date,
+  email: String,
+  phone: String,
+  address: String,
+  property: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Property'
+  }
+}, {timestamps: true})
+
+const InspectProperty = mongoose.model('InspectProperty', propertyInspectionSchema)
 const Property = mongoose.model('Property', propertySchema);
-module.exports = Property
+
+module.exports = {Property, InspectProperty}

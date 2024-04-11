@@ -1,5 +1,6 @@
 const Ambassador = require("../model/ambassador.model");
 const Newsletter = require("../model/newsletter.model");
+const { Property } = require("../model/property.model");
 const Realtor = require("../model/realtor.model");
 
 // ===================== REALTOR SECTION ==================== //
@@ -14,4 +15,7 @@ const ambassadorPhoneExists = phone => Ambassador.findOne({phone})
 // ======================== NEWSLETTER SECTION ====================== //
 const newsletterEmailExists = email => Newsletter.findOne({email})
 
-module.exports = { realtorEmailExists, realtorPhoneExists, ambassadorEmailExists, ambassadorPhoneExists, gettingRealtorById, newsletterEmailExists }
+// =========================== PROPERTY CORNER ============================ //
+const isPropertyExists = id => Property.findById(id)
+
+module.exports = { realtorEmailExists, realtorPhoneExists, ambassadorEmailExists, ambassadorPhoneExists, gettingRealtorById, newsletterEmailExists, isPropertyExists }
