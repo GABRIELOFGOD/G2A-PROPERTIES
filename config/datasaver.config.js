@@ -1,4 +1,5 @@
 const Ambassador = require("../model/ambassador.model");
+const Contact = require("../model/contact.model");
 const Newsletter = require("../model/newsletter.model");
 const Property = require("../model/property.model");
 const Realtor = require("../model/realtor.model");
@@ -11,4 +12,6 @@ const propertyCreator = details => Property.create(details)
 
 const newsletterCreator = email => Newsletter.create({email})
 
-module.exports = { AmbassadorCreator, RealtorCreator, propertyCreator, newsletterCreator }
+const contactCreator = details => Contact.create(details)
+
+module.exports = { AmbassadorCreator, RealtorCreator, propertyCreator, newsletterCreator, contactCreator }

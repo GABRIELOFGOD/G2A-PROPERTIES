@@ -1,5 +1,6 @@
 const { newsletterCreator } = require("../config/datasaver.config");
 const { newsletterEmailExists } = require("../utils/existenceChecker");
+const { allNewsletter } = require("../utils/getData");
 const { emailValidator } = require("../utils/validator");
 
 const subscribeNewsletter = async (req, res) => {
@@ -29,10 +30,11 @@ const getAllNewsletter = async (req, res) => {
   try {
     
     // ========================== GETTING INFORMATION FROM THE DATABASE AND SENDING IT AS RESPONSE ======================= //
-    
+    const allNewsletters = await allNewsletter()
+    res.status(202).json({message: 'These are all newsletter emails', data: allNewsletters})
   } catch (err) {
     res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
   }
 }
 
-module.exports = { subscribeNewsletter }
+module.exports = { subscribeNewsletter, getAllNewsletter }
