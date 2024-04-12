@@ -21,5 +21,6 @@ const isPropertyExists = id => Property.findById(id)
 
 // ========================= ADMIN SETCION ============================== //
 const isAdminEmailExists = email => Admin.findOne({email})
+const gettingAdminById = id => Admin.findById(id)
 
-module.exports = { realtorEmailExists, realtorPhoneExists, ambassadorEmailExists, ambassadorPhoneExists, gettingRealtorById, newsletterEmailExists, isPropertyExists, isAdminEmailExists }
+module.exports = { realtorEmailExists, realtorPhoneExists, ambassadorEmailExists, ambassadorPhoneExists, gettingRealtorById, newsletterEmailExists, isPropertyExists, isAdminEmailExists, gettingAdminById }

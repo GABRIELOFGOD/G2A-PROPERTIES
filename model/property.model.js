@@ -10,14 +10,12 @@ const propertySchema = new mongoose.Schema({
     square_meter: Number,
     parking_lot: Number,
     number_of_bedroom: Number,
+    posterId: mongoose.Types.ObjectId,
+    postedBy: String,
     status: {
       type: String,
-      default: 'listed'
+      default: 'pending'
     },
-    postedBy:{
-      type: mongoose.Types.ObjectId,
-      ref: 'Realtor'
-    }
 },{timestamps: true});
 
 const propertyInspectionSchema = new mongoose.Schema({

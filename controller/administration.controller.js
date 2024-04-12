@@ -51,6 +51,7 @@ const adminLogin = async (req, res) => {
     if(!isPasswordMatch) return res.status(501).json({ error: 'invalid credentials', success: false });
 
     const token = createdToken(isExists._id)
+    console.log(token)
     res.cookie('admin', token, {httpOnly: true, maxAge: 60*60*24})
     res.status(201).json({message: 'admin logged in successfully', success: true})
     

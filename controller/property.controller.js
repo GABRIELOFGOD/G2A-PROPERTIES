@@ -1,5 +1,5 @@
 const { propertyCreator, propertyInspectCreator } = require("../config/datasaver.config");
-const { propertyAdder } = require("../utils/general");
+const { realtorPropertyAdder, adminPropertyAdder } = require("../utils/general");
 const cloudinary = require('../config/cloudinary.config');
 const { emailValidator, phoneValidator } = require("../utils/validator");
 const { isPropertyExists } = require("../utils/existenceChecker");
@@ -14,7 +14,8 @@ const postProperty = async (req, res) => {
 
     if (!name || !address || !price || !square_meter) return res.status(401).json({ error: 'Name, address, price and square meter of properties are required', success: false });
 
-    const poster = req.realtor;
+    const posterId = req.posterId;
+    const posterRole = req.posterRole
 
     let imageBank = [];
 
@@ -38,10 +39,11 @@ const postProperty = async (req, res) => {
       return res.status(402).json({ error: 'There was an error uploading your images', success: false, errMsg: uploadError });
     }
 
-    const details = { name, address, about, price, square_meter, parking_lot, number_of_bedroom, postedBy: poster, images: imageBank };
+    const details = { name, address, about, price, square_meter, parking_lot, number_of_bedroom, posterId, postedBy:posterRole, images: imageBank };
     const newProperty = await propertyCreator(details);
 
-    const addPro = await propertyAdder(poster, newProperty);
+    if(posterRole == 'realtor') await realtorPropertyAdder(posterId, newProperty);
+    if(posterRole == 'admin') await adminPropertyAdder(posterId, newProperty);
 
     res.status(201).json({ message: 'Property posted successfully', success: true, property: newProperty });
 
@@ -87,7 +89,7 @@ const propertyInspect = async (req, res) => {
     const propertyExists = await isPropertyExists(id)
     if(!propertyExists) return res.status(402).json({error: 'This property does no longer exists or has never existed', success: false})
 
-    // if(propertyExists !== 'listed') return res.status(402).json({error: 'Sorry, this property is no longer available for sale', success: false})
+    if(propertyExists !== 'listed') return res.status(402).json({error: 'Sorry, this property is not available for inspection right now', success: false})
 
     const details = { name, time, phone, email, address, date, property:propertyExists }
     const newPropertyInspection = await propertyInspectCreator(details)
