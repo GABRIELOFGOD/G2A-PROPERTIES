@@ -1,30 +1,31 @@
 const { RealtorCreator } = require('../config/datasaver.config')
-const { realtorEmailExists, realtorPhoneExists } = require('../utils/existenceChecker')
+const { realtorEmailExists, realtorPhoneExists, gettingRealtorById, gettingAdminById } = require('../utils/existenceChecker')
 const { passwordHasher, salt, passwordCompare, createdToken } = require('../utils/general')
+const { updateRealtorBlock } = require('../utils/getData')
 const { emailValidator, phoneValidator, passwordValidator } = require('../utils/validator')
 
 const createRealtor = async (req, res) => {
-  const { name, email, phone, password } = req.body
+  const { name, phone, email, password } = req.body
   try {
     
     // ======================= INPUT VALIDATIONS ========================= //
-    if(!name || !email || !password) return res.status(401).json({error: 'All input fields are required', success: false})
+    if(!name || !phone || !email || !password) return res.status(401).json({error: 'All input fields are required', success: false})
 
     const isValidEmail = emailValidator(email)
     if(!isValidEmail) return res.status(401).json({error: 'This is not a valid email address', success: false})
 
-    // const isValidPhone = phoneValidator(phone)
-    // if(!isValidPhone) return res.status(401).json({error: 'This is not a valid phone number', success: false})
+    const isValidPhone = phoneValidator(phone)
+    if(!isValidPhone) return res.status(401).json({error: 'This is not a valid phone number', success: false})
 
     const isPasswordStrong = passwordValidator(password)
     if(!isPasswordStrong) return res.status(401).json({error: 'This is a not strong password, up at least a uppercase, a lower case, a number and a symbol', success: false})
 
     // ===================== CHECKING IF USER EXISTS =================== //
     const isEmailExists = await realtorEmailExists(email)
-    // const isPhoneExists = await realtorPhoneExists(phone)
+    const isPhoneExists = await realtorPhoneExists(phone)
 
     if(isEmailExists) return res.status(401).json({error: 'This email has already being used by another realtor', success: false})
-    // if(isPhoneExists) return res.status(401).json({error: 'This phone number has already being used by another realtor', success: false})
+    if(isPhoneExists) return res.status(401).json({error: 'This phone number has already being used by another realtor', success: false})
 
     const salter = await salt(10)
     const hashedPassword = await passwordHasher(password, salter)
@@ -44,7 +45,7 @@ const createRealtor = async (req, res) => {
 }
 
 const loginRealtor = async (req, res) => {
-  const { email, phone, password } = req.body
+  const { email, password } = req.body
   try {
     
     // =================== VALIADTING USER INPUTS ===================== //
@@ -75,4 +76,28 @@ const loginRealtor = async (req, res) => {
   }
 }
 
-module.exports = { createRealtor, loginRealtor }
+// ======================= CHANGING REALTOR STATUS ======================= //
+const changeRealtorStatus = async (req, res) => {
+  const { id } = req.params
+  try {
+
+    // =============================== CHECKING FOR THE REALTOR ACCOUNT ======================== //
+    if(!id) return res.status(402).json({error: 'Please specify the realtor account to be updated', success: false})
+    const isRealtorExists = await gettingRealtorById(id)
+
+    if(!isRealtorExists) return res.status(402).json({error: 'This realtor does not exist or account has been deleted', success: false})
+
+    const workingAdmin = await gettingAdminById(req.admin._id)
+    if(!workingAdmin || workingAdmin.blocked == true) return res.status(402).json({error: 'Authentication failed, sorry you cannot perform this opration', success: false})
+
+    const changeTo = !isRealtorExists.blocked
+
+    const realtorChanged = await updateRealtorBlock(isRealtorExists._id, changeTo)
+    res.status(202).json({message: 'Realtor updated successfully', success: true})
+
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
+module.exports = { createRealtor, loginRealtor, changeRealtorStatus }

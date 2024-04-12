@@ -3,6 +3,7 @@ const { realtorPropertyAdder, adminPropertyAdder } = require("../utils/general")
 const cloudinary = require('../config/cloudinary.config');
 const { emailValidator, phoneValidator } = require("../utils/validator");
 const { isPropertyExists } = require("../utils/existenceChecker");
+const { listPropertyUpdate, deletePropertyFunction, allPropertiesGet } = require("../utils/getData");
 
 const postProperty = async (req, res) => {
   const { name, address, about, price, square_meter, parking_lot, number_of_bedroom } = req.body;
@@ -52,9 +53,13 @@ const postProperty = async (req, res) => {
   }
 }
 
+// ========================= ALL PROPERIES =============================== //
 const getAllProperties = async (req, res) => {
   try {
     
+    const allProperties = await allPropertiesGet()
+    
+    res.status(203).json({message: 'This is are the properties on the website', success: true, data: allProperties})
     
   } catch (err) {
     res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
@@ -89,7 +94,7 @@ const propertyInspect = async (req, res) => {
     const propertyExists = await isPropertyExists(id)
     if(!propertyExists) return res.status(402).json({error: 'This property does no longer exists or has never existed', success: false})
 
-    if(propertyExists !== 'listed') return res.status(402).json({error: 'Sorry, this property is not available for inspection right now', success: false})
+    if(propertyExists.status !== 'listed') return res.status(402).json({error: 'Sorry, this property is not available for inspection right now', success: false})
 
     const details = { name, time, phone, email, address, date, property:propertyExists }
     const newPropertyInspection = await propertyInspectCreator(details)
@@ -101,4 +106,62 @@ const propertyInspect = async (req, res) => {
   }
 }
 
-module.exports = { postProperty, getAllProperties, propertyInspect };
+const propertyListed = async (req, res) => {
+  const { id } = req.params
+  try {
+    
+    // ==================== VALIDATING PROPERTY ID ========================== //
+    if(!id) return res.status(402).json({error: 'Please specify the property to be listed', success: false})
+    const theProperty = await isPropertyExists(id)
+
+    if(!theProperty) return res.status(402).json({error: 'This property does no longer exist', success: false})
+
+    const propertyChangedListed = await listPropertyUpdate(id)
+    res.status(202).json({message: "Property Listed successfully", success: true, data: propertyChangedListed})
+    
+  } catch (err) {
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+  }
+}
+
+// ====================== GETTING SINGLE PROPERTY ====================== //
+const getSingleProperty = async (req, res) => {
+  const { id } = req.params
+  try {
+    
+    // ==================== VALIDATING PROPERTY TO GET ====================== //
+    if(!id) return res.status(402).json({error: 'Please specify property to get', success: false})
+
+    const theProperty = await isPropertyExists(id)
+
+    if(!theProperty) return res.status(402).json({error: 'This property does no longer exist', success: false})
+
+    res.status(202).json({message: "Got it, here's your property", success: true, data: theProperty})
+
+  } catch (err) {
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+  }
+}
+
+// =================== PROPERTY DELETE FUNCTION ===================== //
+const deleteProperty = async (req, res) => {
+  const { id } = req.params
+  try {
+    
+    // ==================== VALIDATING PROPERTY TO DELETE ======================== //
+    if(!id) return res.status(402).json({error: 'Please specifify the property to delete', success: false})
+    
+    const theProperty = await isPropertyExists(id)
+
+    if(!theProperty) return res.status(402).json({error: 'This property does no longer exist', success: false})
+    const deleteTheProperty = await deletePropertyFunction(id)
+
+    res.status(203).json({message: "Property deleted successfully", success: true})
+    
+  } catch (err) {
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+  }
+}
+
+
+module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty };

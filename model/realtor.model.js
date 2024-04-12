@@ -4,10 +4,10 @@ const mongoose = require('mongoose'); // Erase if already required
 const realtorSchema = new mongoose.Schema({
     name: String,
     email: String,
-    // phone: Number,
+    phone: Number,
     blocked: {
       type: Boolean,
-      default: false
+      default: true
     },
     password: String,
     properties: [{
