@@ -34,6 +34,8 @@ const realtorIdentifier = async (req, res, next) => {
     if(!id) return res.status(401).json({error: 'an error occur while trying to authenticate you, kindly login and try again', success: false})
     
     const realtor = await gettingRealtorById(id)
+
+    if(realtor.blocked == true) return res.status(402).json({error: 'You have been restricted to perform this operation, please contact us and lodge your complain', success: false})
     
     req.realtor = realtor._id
     next()

@@ -9,6 +9,7 @@ const realtorRouter = require('./routes/realtor.router')
 const propertyRouter = require('./routes/property.router')
 const newsletterRouter = require('./routes/newsletter.router')
 const contactRouter = require('./routes/contact.router')
+const adminRouter = require('./routes/administration.router')
 
 // ================= CONFIGURATIONS ================== //
 const databaseConnection = require('./config/database.config')
@@ -29,7 +30,8 @@ app.use('/ambassador', ambassadorRouter);
 app.use('/realtor', realtorRouter);
 app.use('/property', propertyRouter);
 app.use('/newsletter', newsletterRouter);
-app.use('/contact', contactRouter)
+app.use('/contact', contactRouter);
+app.use('/admin', adminRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`)

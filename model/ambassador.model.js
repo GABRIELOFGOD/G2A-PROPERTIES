@@ -8,7 +8,11 @@ const ambassadorSchema = new mongoose.Schema({
     marketing_experience:String,
     address:String,
     what_to_offer:String,
-    social_media:String
+    social_media:String,
+    role: {
+        type: String,
+        default: 'ambassador'
+    }
 },{timestamps: true});
 
 //Export the model
