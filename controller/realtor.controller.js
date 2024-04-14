@@ -100,4 +100,24 @@ const changeRealtorStatus = async (req, res) => {
   }
 }
 
-module.exports = { createRealtor, loginRealtor, changeRealtorStatus }
+// ====================== FORGOT PASSWORD POST REQUEST ================================= //
+const realtorForgotPassword = async (req, res) => {
+  const { email } = req.body
+  try {
+    
+    // ====================== VALIDATING EMAIL INPUT ======================== //
+    if(!email) return res.status(401).json({error: 'Please enter your email address', success: false})
+
+    // ========================= CHEcKING IF EMAIL ADDRESS EXISTS ============================= //
+    const isEmailExists = await realtorEmailExists(email)
+    if(!isEmailExists) return res.status(401).json({error: 'This is an invalid email, please check and try again', success: false})
+
+    console.log(req.get('origin'))
+    // console.log('headers', req.headers)
+    
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
+module.exports = { createRealtor, loginRealtor, changeRealtorStatus, realtorForgotPassword }
