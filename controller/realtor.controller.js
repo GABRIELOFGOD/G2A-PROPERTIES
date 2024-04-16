@@ -120,4 +120,19 @@ const realtorForgotPassword = async (req, res) => {
   }
 }
 
-module.exports = { createRealtor, loginRealtor, changeRealtorStatus, realtorForgotPassword }
+// =========================================== SELF PROFILE ================================ //
+const realtorProfile = async (req, res) => {
+  try {
+    const realtor = req.realtor
+    if(!realtor) return res.status(401).json({error: 'Authentication failed', success: false})
+
+    const theRealtor = await gettingRealtorById(realtor)
+
+    res.status(201).json({message: 'This is the realtor profile', success: true, data: theRealtor})
+    
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
+module.exports = { createRealtor, loginRealtor, changeRealtorStatus, realtorForgotPassword, realtorProfile }
