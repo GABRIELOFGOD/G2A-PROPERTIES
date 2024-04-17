@@ -68,7 +68,7 @@ const loginRealtor = async (req, res) => {
 
     // ======================== SENDING COOOKIE TO BROWSER ======================== //
     const token = createdToken(theRealtor._id)
-    res.cookie('realtor', token, { httpOnly: true, expires: 0 })
+    res.cookie('realtor', token, { httpOnly: true, maxAge: 60*60*24*3 })
     res.status(201).json({message: "Login successful", success: true})
 
   } catch (err) {
