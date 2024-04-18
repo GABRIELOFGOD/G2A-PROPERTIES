@@ -54,4 +54,31 @@ const propertyPostingAuth = async (req, res, next) => {
   }
 }
 
+// const specificPropertyAuth = async(req, res) => {
+//   const cookie = req.headers.cookie
+//   try {
+    
+//     // ======================= CONFIRMING COOKIE =========================== //
+//     if(!cookie) return res.status(402).json({error: 'Authentication failed please log in to perform thisi operation', success: false})
+
+//     // ==================== CHECKING FOR USER ========================== //
+//     const userRole = cookie.split('=')[0]
+//     const userToken = cookie.split('=')[1]
+
+//     if(userRole !== 'realtor' && userRole !== 'admin') return res.status(402).json({error: 'You are not allowed to perform this action', success: false})
+
+//     jwt.verify(userToken, process.env.SECRET_KEY, async (err, decodedToken) => {
+//       if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
+
+//       const { id } = decodedToken
+//       if(!id) return res.status(402).json({error: 'couldn\'t authenticate you, please try login again', success: false})
+
+//       req.posterId = id
+//     })
+
+//   } catch (err) {
+//     res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+//   }
+// }
+
 module.exports = { propertyPostingAuth }

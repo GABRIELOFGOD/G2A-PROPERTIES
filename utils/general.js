@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const Realtor = require('../model/realtor.model')
 const Admin = require('../model/administration.model')
+const { Property } = require('../model/property.model')
 
 const salt = number => bcrypt.genSalt(number)
 
@@ -21,4 +22,7 @@ const adminPropertyAdder = (id, property) => Admin.findByIdAndUpdate(id, {
   $addToSet: {properties: property}
 })
 
-module.exports = { passwordHasher, salt, passwordCompare, createdToken, realtorPropertyAdder, adminPropertyAdder }
+// ===================  PROPERTY UPDATE ======================= //
+const updatePropertyContent = (id, body) => Property.findByIdAndUpdate(id, body)
+
+module.exports = { passwordHasher, salt, passwordCompare, createdToken, realtorPropertyAdder, adminPropertyAdder, updatePropertyContent }

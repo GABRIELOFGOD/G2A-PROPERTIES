@@ -1,6 +1,6 @@
 const multer = require('multer')
 const { realtorAuthouriser, realtorIdentifier } = require('../middleware/realtor.middleware')
-const { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty } = require('../controller/property.controller')
+const { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty, editProperty } = require('../controller/property.controller')
 const { propertyPostingAuth } = require('../middleware/property.middleware')
 
 const router = require('express').Router()
@@ -15,7 +15,7 @@ const upload = multer({storage})
 
 router.post('/post', upload.array('file'), propertyPostingAuth, postProperty)
 router.get('/properties', getAllProperties)
-router.post('/inspect/:id', propertyInspect)
+router.route('/inspect/:id').post(propertyInspect).put(propertyPostingAuth, editProperty)
 router.route('/list/:id').put(propertyListed).get(getSingleProperty).delete(deleteProperty)
 router.get('/get', getAllProperties)
 

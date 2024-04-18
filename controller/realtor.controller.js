@@ -68,11 +68,12 @@ const loginRealtor = async (req, res) => {
 
     // ======================== SENDING COOOKIE TO BROWSER ======================== //
     const token = createdToken(theRealtor._id)
-    res.cookie('realtor', token, { httpOnly: true, maxAge: 60*60*24*3 })
+    res.cookie('realtor', token, { httpOnly: true, maxAge: 1000*60*60*24*3 })
     res.status(201).json({message: "Login successful", success: true})
 
   } catch (err) {
     res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+    console.log(err)
   }
 }
 

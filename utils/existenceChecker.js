@@ -18,9 +18,10 @@ const newsletterEmailExists = email => Newsletter.findOne({email})
 
 // =========================== PROPERTY CORNER ============================ //
 const isPropertyExists = id => Property.findById(id)
+const propertyByPosterId = posterId => Property.findOne({posterId})
 
 // ========================= ADMIN SETCION ============================== //
 const isAdminEmailExists = email => Admin.findOne({email})
 const gettingAdminById = id => Admin.findById(id)
 
-module.exports = { realtorEmailExists, realtorPhoneExists, ambassadorEmailExists, ambassadorPhoneExists, gettingRealtorById, newsletterEmailExists, isPropertyExists, isAdminEmailExists, gettingAdminById }
+module.exports = { realtorEmailExists, realtorPhoneExists, ambassadorEmailExists, ambassadorPhoneExists, gettingRealtorById, newsletterEmailExists, isPropertyExists, isAdminEmailExists, gettingAdminById, propertyByPosterId }

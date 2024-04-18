@@ -1,9 +1,10 @@
 const { propertyCreator, propertyInspectCreator } = require("../config/datasaver.config");
-const { realtorPropertyAdder, adminPropertyAdder } = require("../utils/general");
+const { realtorPropertyAdder, adminPropertyAdder, updatePropertyContent } = require("../utils/general");
 const cloudinary = require('../config/cloudinary.config');
 const { emailValidator, phoneValidator } = require("../utils/validator");
-const { isPropertyExists } = require("../utils/existenceChecker");
+const { isPropertyExists, gettingRealtorById, propertyByPosterId } = require("../utils/existenceChecker");
 const { listPropertyUpdate, deletePropertyFunction, allPropertiesGet } = require("../utils/getData");
+const mongoose = require("mongoose");
 
 const postProperty = async (req, res) => {
   const { name, address, about, price, square_meter, parking_lot, number_of_bedroom } = req.body;
@@ -163,5 +164,30 @@ const deleteProperty = async (req, res) => {
   }
 }
 
+const editProperty = async (req, res) => {
+  const { id } = req.params
+  try {
+    if(!id) return res.status(402).json({error: 'Please specify the property you want to edit', success: false})
 
-module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty };
+    if(!req.body || Object.keys(req.body).length == 0) return res.status(403).json({error: 'Please make the change you want to take effect', success: false})
+
+    const isProperty = await isPropertyExists(id)
+
+    if(!isProperty) return res.status(401).json({error: 'This property does not exists or has been deleted', success: false})
+
+    if(req.posterRole == 'realtor'){
+      if(isProperty.posterId != req.posterId) return res.status(403).json({error: 'You are not the poster of this property, you cannot perform this operation', success: false})
+    }
+
+    const propertyAdjust = await updatePropertyContent(id, req.body)
+    res.status(201).json({message: 'property has been updated successfully', success: true})
+
+  } catch (err) {
+    // if(err instanceof CastError) return res.status(403).json({error: 'This is not a valid property from our website', success: false})
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+    console.log(err)
+  }
+}
+
+
+module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty, editProperty };
