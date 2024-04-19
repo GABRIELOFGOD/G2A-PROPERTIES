@@ -14,6 +14,10 @@ const createdToken = id => {
   return(jwt.sign({id}, process.env.SECRET_KEY, { expiresIn: '3d' }))
 }
 
+const emailToken = id => {
+  return jwt.sign({id}, process.env.SECRET_KEY, {expiresIn: '5m'})
+}
+
 const realtorPropertyAdder = (id, property) => Realtor.findByIdAndUpdate(id, {
   $addToSet: {properties: property}
 })
@@ -22,7 +26,9 @@ const adminPropertyAdder = (id, property) => Admin.findByIdAndUpdate(id, {
   $addToSet: {properties: property}
 })
 
+const updatingRealtorPassword = (id, password) => Realtor.findByIdAndUpdate(id, {password})
+
 // ===================  PROPERTY UPDATE ======================= //
 const updatePropertyContent = (id, body) => Property.findByIdAndUpdate(id, body)
 
-module.exports = { passwordHasher, salt, passwordCompare, createdToken, realtorPropertyAdder, adminPropertyAdder, updatePropertyContent }
+module.exports = { passwordHasher, salt, passwordCompare, createdToken, realtorPropertyAdder, adminPropertyAdder, updatePropertyContent, emailToken, updatingRealtorPassword }

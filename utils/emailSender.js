@@ -25,7 +25,7 @@ const caseCodeEmailSender = (email, name, link) => {
       var mailOptions = {
       from: 'aletechglobal@gmail.com',
       to: email,
-      subject: 'Case Code from Safernet',
+      subject: 'Password reset link',
       html: mess
       };
 
