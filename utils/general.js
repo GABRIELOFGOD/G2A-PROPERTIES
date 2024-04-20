@@ -11,7 +11,7 @@ const passwordHasher = (password, hash) => bcrypt.hash(password, hash)
 const passwordCompare = (password, hashed) => bcrypt.compare(password, hashed)
 
 const createdToken = id => {
-  return(jwt.sign({id}, process.env.SECRET_KEY, { expiresIn: '3d', secure: true }))
+  return(jwt.sign({id}, process.env.SECRET_KEY, { expiresIn: '3d' }))
 }
 
 const emailToken = id => {
