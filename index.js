@@ -17,7 +17,7 @@ const app = express()
 
 const PORT = process.env.PORT || 4200
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://g2a-properties.vercel.app'],
     credentials: true
 }))
 
