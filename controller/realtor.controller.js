@@ -127,6 +127,19 @@ const realtorForgotPassword = async (req, res) => {
   }
 }
 
+// const realtorProperties = async (req, res) => {
+//   const id = req.realtor
+//   try {
+    
+//     const theRealtor = await gettingRealtorById(id).populate('properties')
+//     // const theRel = theRealtor.populate()
+//     console.log(theRel)
+//   } catch (err) {
+//     res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+//     console.log(err)
+//   }
+// }
+
 // ===================== UPDATING REALTOR PASSWORD ====================== //
 const updateRealtorPassword = async (req, res) => {
   const { password } = req.body;
@@ -172,7 +185,7 @@ const realtorProfile = async (req, res) => {
       if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false, errMsg: err})
 
       const {id} = decodedToken
-      const theRealtor = await gettingRealtorById(id)
+      const theRealtor = await gettingRealtorById(id).populate('properties')
       res.status(201).json({message: 'This is the realtor profile', success: true, data: theRealtor})
     })
 

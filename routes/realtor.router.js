@@ -12,5 +12,6 @@ router.route('/profile').get(realtorProfile)
 router.put('/change_password/:token', updateRealtorPassword)
 router.get('/all', gettingAllRealtor)
 router.get('/single/:id',adminAuth, adminIdentifier, gettingSingleRealtor)
+// router.get('/properties', realtorAuthouriser, realtorIdentifier, realtorProperties)
 
 module.exports = router

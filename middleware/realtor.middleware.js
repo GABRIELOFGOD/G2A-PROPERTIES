@@ -11,7 +11,7 @@ const realtorAuthouriser = async (req, res, next) => {
     const isRealtor = cookie.split("=")[0]
     const realtorCookie = cookie.split("=")[1]
 
-    if(isRealtor !== 'realtor') return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
+    if(isRealtor !== 'G2a') return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
 
     jwt.verify(realtorCookie, process.env.SECRET_KEY, (err, decodedToken) => {
       if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false, errMsg: err})
