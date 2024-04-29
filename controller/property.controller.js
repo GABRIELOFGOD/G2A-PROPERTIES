@@ -67,6 +67,24 @@ const getAllProperties = async (req, res) => {
   }
 }
 
+// ========================= ALL PROPERIES =============================== //
+const getListedProperties = async (req, res) => {
+  try {
+    
+    const allProperties = await allPropertiesGet()
+
+    let listedProperties = []
+    allProperties?.forEach(prop => {
+      if(prop.status == 'listed') listedProperties.push(prop)
+    })
+    
+    res.status(203).json({message: 'This is are the properties on the website', success: true, data: listedProperties})
+    
+  } catch (err) {
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+  }
+}
+
 const propertyInspect = async (req, res) => {
   const { name, time, phone, email, address, date } = req.body
   const { id } = req.params
@@ -190,4 +208,4 @@ const editProperty = async (req, res) => {
 }
 
 
-module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty, editProperty };
+module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty, editProperty, getListedProperties };

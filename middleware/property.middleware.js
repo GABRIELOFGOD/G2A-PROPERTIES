@@ -12,7 +12,7 @@ const propertyPostingAuth = async (req, res, next) => {
     const userRole = cookie.split('=')[0]
     const userToken = cookie.split('=')[1]
 
-    if(userRole !== 'realtor' && userRole !== 'admin') return res.status(402).json({error: 'You are not allowed to perform this action', success: false})
+    if(userRole !== 'G2a') return res.status(402).json({error: 'You are not allowed to perform this action', success: false})
 
     jwt.verify(userToken, process.env.SECRET_KEY, async (err, decodedToken) => {
       if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
@@ -23,7 +23,11 @@ const propertyPostingAuth = async (req, res, next) => {
       req.posterId = id
 
       // =========================== GETTING USER ROLE ================================= //
-      if(userRole == 'realtor'){
+      const adminUser = await gettingAdminById(id)
+      const realtorUser = await gettingRealtorById(id)
+
+      const theUser = adminUser || realtorUser
+      if(theUser.role == 'realtor'){
         const realtorId = await gettingRealtorById(id)
         if(!realtorId) return res.status(402).json({error: 'This user account does not exists or has been deleted', success: false})
 
@@ -35,7 +39,7 @@ const propertyPostingAuth = async (req, res, next) => {
         
       }
 
-      if(userRole == 'admin'){
+      if(theUser.role == 'admin'){
         const adminId = await gettingAdminById(id)
         if(!adminId) return res.status(402).json({error: 'This user account does not exists or has been deleted', success: false})
         

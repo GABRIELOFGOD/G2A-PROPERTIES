@@ -21,4 +21,6 @@ const updateRealtorBlock = (id, change) => Realtor.findByIdAndUpdate(id, {
   blocked: change
 })
 
-module.exports = { allNewsletter, listPropertyUpdate, deletePropertyFunction, allPropertiesGet, updateRealtorBlock }
+const allRealltorAccount = () => Realtor.find()
+
+module.exports = { allNewsletter, listPropertyUpdate, deletePropertyFunction, allPropertiesGet, updateRealtorBlock, allRealltorAccount }

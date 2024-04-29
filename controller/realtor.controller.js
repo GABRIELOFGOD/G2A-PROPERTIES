@@ -2,7 +2,7 @@ const { RealtorCreator } = require('../config/datasaver.config')
 const { caseCodeEmailSender } = require('../utils/emailSender')
 const { realtorEmailExists, realtorPhoneExists, gettingRealtorById, gettingAdminById } = require('../utils/existenceChecker')
 const { passwordHasher, salt, passwordCompare, createdToken, emailToken, updatingRealtorPassword } = require('../utils/general')
-const { updateRealtorBlock } = require('../utils/getData')
+const { updateRealtorBlock, allRealltorAccount } = require('../utils/getData')
 const { emailValidator, phoneValidator, passwordValidator } = require('../utils/validator')
 const jwt = require('jsonwebtoken')
 
@@ -70,7 +70,7 @@ const loginRealtor = async (req, res) => {
 
     // ======================== SENDING COOOKIE TO BROWSER ======================== //
     const token = createdToken(theRealtor._id)
-    res.cookie('realtor', token, { secure: true, httpOnly: true, maxAge: 1000*60*60*24*3, sameSite: "none", path: "/" })
+    res.cookie('G2a', token, { secure: true, httpOnly: true, maxAge: 1000*60*60*24*3, sameSite: "none", path: "/" })
     res.status(201).json({message: "Login successful", success: true})
 
   } catch (err) {
@@ -166,7 +166,7 @@ const realtorProfile = async (req, res) => {
     const isRealtor = cookie.split("=")[0]
     const realtorCookie = cookie.split("=")[1]
 
-    if(isRealtor !== 'realtor') return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
+    if(isRealtor !== 'G2a') return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
 
     jwt.verify(realtorCookie, process.env.SECRET_KEY, async (err, decodedToken) => {
       if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false, errMsg: err})
@@ -182,4 +182,35 @@ const realtorProfile = async (req, res) => {
   }
 }
 
-module.exports = { createRealtor, loginRealtor, changeRealtorStatus, realtorForgotPassword, realtorProfile, updateRealtorPassword }
+// ========================== GETTING ALL REGISTERED REALTOR ACCOUNTS =============================== //
+const gettingAllRealtor = async (req, res) => {
+  try {
+    const allRealtor = await allRealltorAccount()
+    res.status(201).json({message: 'These is are all registered realtor accounts', success: true, data: allRealtor})
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+    console.log(err)
+  }
+}
+
+const gettingSingleRealtor = async (req, res) => {
+  const { id } = req.params
+  try {
+    
+    if(!id) return res.status(402).json({error: 'Define realtor to be gotten', success: false})
+
+    // ======================== VALIDATING ID ==================================== //
+    const isValidRealtor = await gettingRealtorById(id)
+    if(!isValidRealtor) return res.status(402).json({error: 'This reacltor account has been deleted or never existed', success: false})
+
+    // =========================== SENDING REALTOR DATA ========================== //
+    const theRealtor = await isValidRealtor.populate()
+
+    res.status(201).json({message: 'This is the reactor profile/ account', success: true, data: theRealtor})
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+    console.log(err)
+  }
+}
+
+module.exports = { createRealtor, loginRealtor, changeRealtorStatus, realtorForgotPassword, realtorProfile, updateRealtorPassword, gettingSingleRealtor, gettingAllRealtor }

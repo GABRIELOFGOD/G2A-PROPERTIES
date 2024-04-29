@@ -11,7 +11,7 @@ const adminAuth = async (req, res, next) => {
     const cookieName = cookie.split('=')[0]
     const cookieToken = cookie.split('=')[1]
 
-    if(cookieName !== 'admin') return res.status(402).json({error: 'Authentication failed', success: false})
+    if(cookieName !== 'G2a') return res.status(402).json({error: 'Authentication failed', success: false})
     jwt.verify(cookieToken, process.env.SECRET_KEY, (err, decodedToken) => {
       if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false, errMsg: err})
 

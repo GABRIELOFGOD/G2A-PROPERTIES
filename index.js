@@ -17,9 +17,11 @@ const app = express()
 
 const PORT = process.env.PORT || 4200
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://g2a-properties.vercel.app'],
-    credentials: true
-}))
+  origin: ['https://g2arealestatecoach.com.ng', 'http://localhost:5173'],
+  methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  credentials: true
+}));
 
 app.use(express.json())
 app.use(cookieParser())
