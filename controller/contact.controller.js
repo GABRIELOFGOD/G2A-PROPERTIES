@@ -1,4 +1,5 @@
 const { contactCreator } = require("../config/datasaver.config");
+const { gettingAllContact } = require("../utils/getData");
 const { emailValidator, phoneValidator } = require("../utils/validator");
 
 const fillContact = async(req, res) => {
@@ -22,8 +23,21 @@ const fillContact = async(req, res) => {
     res.status(201).json({message: 'Your contact has been saved', success: true, data: newContact})
     
   } catch (err) {
-    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})    
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
   }
 }
 
-module.exports = { fillContact }
+const getAllContactInfo = async (req, res) => {
+  try {
+    
+    if(!req.admin) return res.status(401).json({error: 'Authentication Failed, please login', success: true})
+
+    const allContact = await gettingAllContact()
+
+    res.status(201).json({message: 'These are the contact requests', success: true, data: allContact})
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
+module.exports = { fillContact, getAllContactInfo }

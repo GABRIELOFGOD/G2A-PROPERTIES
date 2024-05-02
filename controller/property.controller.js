@@ -2,8 +2,8 @@ const { propertyCreator, propertyInspectCreator } = require("../config/datasaver
 const { realtorPropertyAdder, adminPropertyAdder, updatePropertyContent } = require("../utils/general");
 const cloudinary = require('../config/cloudinary.config');
 const { emailValidator, phoneValidator } = require("../utils/validator");
-const { isPropertyExists, gettingRealtorById, propertyByPosterId } = require("../utils/existenceChecker");
-const { listPropertyUpdate, deletePropertyFunction, allPropertiesGet } = require("../utils/getData");
+const { isPropertyExists, gettingRealtorById, propertyByPosterId, gettingInspectionById } = require("../utils/existenceChecker");
+const { listPropertyUpdate, deletePropertyFunction, allPropertiesGet, getAllInspect } = require("../utils/getData");
 const mongoose = require("mongoose");
 
 const postProperty = async (req, res) => {
@@ -203,9 +203,37 @@ const editProperty = async (req, res) => {
   } catch (err) {
     // if(err instanceof CastError) return res.status(403).json({error: 'This is not a valid property from our website', success: false})
     res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
-    console.log(err)
   }
 }
 
+const getAllInspectRequest = async (req, res) => {
+  try {
 
-module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty, editProperty, getListedProperties };
+    if(!req.admin) return res.status(402).json({error: 'Cannot authenticate you', success: false})
+    
+    const allRequest = await getAllInspect()
+    res.status(201).json({message: 'These are the inspection requests', success: true, data: allRequest})
+  } catch (err) {
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+  }
+}
+
+const getSingleInspection = async (req, res) => {
+  const { id } = req.params
+  try {
+    if(!req.admin) return res.status(402).json({error: 'Cannot authenticate you', success: false})
+
+    if(!id) return res.status(402).json({error: 'special what inspection you want to look into', success: false})
+
+    const theInspect = await gettingInspectionById(id)
+
+    if(!theInspect) return res.status(402).json({error: 'This Inspection request has been fufilled or deleted', success: false})
+
+    res.status(201).json({message: 'This is the property you requested for', success: true, data: theInspect})
+    
+  } catch (err) {
+    res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+  }
+}
+
+module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty, editProperty, getListedProperties, getAllInspectRequest, getSingleInspection };

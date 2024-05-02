@@ -32,7 +32,7 @@ const propertyPostingAuth = async (req, res, next) => {
         if(!realtorId) return res.status(402).json({error: 'This user account does not exists or has been deleted', success: false})
 
         // ========================  CHECKING IF REALTOR IS BLOCKED ========================== //
-        if(realtorId.blocked == true) return res.status(402).json({error: 'You have been restricted to perform this operation', success: false})
+        if(realtorId.blocked == true) return res.status(402).json({error: 'You have been restricted to perform this operation, kindly reach out to an admin for account unblock', success: false})
       
         req.posterRole = realtorId.role
         next()
@@ -44,7 +44,7 @@ const propertyPostingAuth = async (req, res, next) => {
         if(!adminId) return res.status(402).json({error: 'This user account does not exists or has been deleted', success: false})
         
         // ========================  CHECKING IF ADMIN IS BLOCKED ========================== //
-        if(adminId.blocked == true) return res.status(402).json({error: 'You have been restricted to perform this operation', success: false})
+        if(adminId.blocked == true) return res.status(402).json({error: 'You have been restricted to perform this operation, kindly reach out to an admin', success: false})
       
         req.posterRole = adminId.role
         next()

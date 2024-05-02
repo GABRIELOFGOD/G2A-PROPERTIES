@@ -61,6 +61,19 @@ const adminLogin = async (req, res) => {
   }
 }
 
+
+// ========================= REALTOR LOGOUT ======================= //
+const logoutAdmin = async (req, res) => {
+  try {
+    
+    res.cookie('G2a', 'a', { secure: true, httpOnly: true, maxAge: 1, sameSite: "none", path: "/" })
+    res.status(201).json({message: "admin logout successfully", success: true})
+
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
 const adminProfile = async (req, res) => {
   const cookie = req.headers.cookie
   try {
@@ -112,4 +125,4 @@ const updateAdminData = async (req, res) => {
   }
 }
 
-module.exports = { adminRegistration, adminLogin, adminProfile, updateAdminData }
+module.exports = { adminRegistration, adminLogin, adminProfile, updateAdminData, logoutAdmin }

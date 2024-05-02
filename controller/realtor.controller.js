@@ -115,7 +115,18 @@ const loginRealtor = async (req, res) => {
 
   } catch (err) {
     res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
-    console.log(err)
+  }
+}
+
+// ========================= REALTOR LOGOUT ======================= //
+const logoutRealtor = async (req, res) => {
+  try {
+    
+    res.cookie('G2a', 'a', { secure: true, httpOnly: true, maxAge: 1, sameSite: "none", path: "/" })
+    res.status(201).json({message: "realtor logout successfully", success: true})
+
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
   }
 }
 
@@ -330,4 +341,4 @@ const gettingSingleRealtor = async (req, res) => {
   }
 }
 
-module.exports = { createRealtor, loginRealtor, changeRealtorStatus, realtorForgotPassword, realtorProfile, updateRealtorPassword, gettingSingleRealtor, gettingAllRealtor, updateRealtorData, realtorUpdateAvatar }
+module.exports = { createRealtor, loginRealtor, changeRealtorStatus, realtorForgotPassword, realtorProfile, updateRealtorPassword, gettingSingleRealtor, gettingAllRealtor, updateRealtorData, realtorUpdateAvatar, logoutRealtor }

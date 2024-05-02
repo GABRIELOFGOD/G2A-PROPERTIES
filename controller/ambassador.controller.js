@@ -1,5 +1,6 @@
 const { AmbassadorCreator } = require("../config/datasaver.config")
 const { ambassadorEmailExists, ambassadorPhoneExists } = require("../utils/existenceChecker")
+const { gettingAllAmbassador } = require("../utils/getData")
 const { emailValidator, phoneValidator } = require('../utils/validator')
 
 const registerAmbassador = async (req, res) => {
@@ -30,8 +31,22 @@ const registerAmbassador = async (req, res) => {
 
     // ====================== //////// ====================== //
   } catch (err) {
-    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})    
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err});
   }
 }
 
-module.exports = { registerAmbassador }
+const getAllAmbassador = async (req, res) => {
+  try {
+
+    if(!req.admin) res.status(402).json({error: 'Authentication Failed, please login', success: true})
+
+    const allAmbassador = await gettingAllAmbassador()
+
+    res.status(201).json({message: 'These are all the ambassador requests', success: true, data: allAmbassador})
+    
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err});
+  }
+}
+
+module.exports = { registerAmbassador, getAllAmbassador }
