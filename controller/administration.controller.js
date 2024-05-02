@@ -1,6 +1,7 @@
 const { adminCreator } = require("../config/datasaver.config");
 const { isAdminEmailExists, gettingAdminById } = require("../utils/existenceChecker");
 const { passwordHasher, salt, passwordCompare, createdToken } = require("../utils/general");
+const { adminUpdateInfo } = require("../utils/getData");
 const { emailValidator, passwordValidator } = require("../utils/validator");
 const jwt = require('jsonwebtoken')
 
@@ -84,4 +85,31 @@ const adminProfile = async (req, res) => {
   }
 }
 
-module.exports = { adminRegistration, adminLogin, adminProfile }
+const updateAdminData = async (req, res) => {
+  const cookie = req.headers.cookie
+  try {
+    
+    if(!cookie) return res.status(402).json({error: 'Please login again', success: false})
+
+    const isRealtor = cookie.split("=")[0]
+    const realtorCookie = cookie.split("=")[1]
+
+    if(isRealtor !== 'G2a') return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
+
+    jwt.verify(realtorCookie, process.env.SECRET_KEY, async (err, decodedToken) => {
+      if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false, errMsg: err})
+
+      const {id} = decodedToken
+      const theRealtor = await gettingAdminById(id)
+      if(!theRealtor) return res.status(402).json({error: 'This account does not exists or has been deleted', success: true})
+
+      const realtorUpdater = await adminUpdateInfo(id, req.body)
+      
+      res.status(201).json({message: 'Information Updated successfully', success: true})
+    })
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
+module.exports = { adminRegistration, adminLogin, adminProfile, updateAdminData }

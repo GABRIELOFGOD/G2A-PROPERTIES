@@ -15,15 +15,17 @@ const caseCodeEmailSender = (email, name, link) => {
   `
 
   var transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'g2arealestatecoach.com.ng',
+      port: 465,
+      secure: true,
       auth: {
-          user: 'aletechglobal@gmail.com',
+          user: 'no-reply@g2arealestatecoach.com.ng',
           pass: process.env.GOOGLE_EMAIL_AUTH
       }
       });
 
       var mailOptions = {
-      from: 'aletechglobal@gmail.com',
+      from: 'no-reply@g2arealestatecoach.com.ng',
       to: email,
       subject: 'Password reset link',
       html: mess

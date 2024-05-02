@@ -6,6 +6,7 @@ const adminSchema = new mongoose.Schema({
     email: String,
     // phone: Number,
     password: String,
+    avatar: String,
     properties: [{
       type: mongoose.Types.ObjectId,
       ref: 'Property'
