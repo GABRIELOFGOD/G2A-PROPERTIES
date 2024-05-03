@@ -333,9 +333,9 @@ const gettingSingleRealtor = async (req, res) => {
     if(!isValidRealtor) return res.status(402).json({error: 'This reacltor account has been deleted or never existed', success: false})
 
     // =========================== SENDING REALTOR DATA ========================== //
-    const theRealtor = await isValidRealtor.populate()
+    // const theRealtor = await isValidRealtor
 
-    res.status(201).json({message: 'This is the reactor profile/ account', success: true, data: theRealtor})
+    res.status(201).json({message: 'This is the reactor profile/ account', success: true, data: isValidRealtor})
   } catch (err) {
     res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
   }

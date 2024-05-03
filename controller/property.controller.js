@@ -7,7 +7,7 @@ const { listPropertyUpdate, deletePropertyFunction, allPropertiesGet, getAllInsp
 const mongoose = require("mongoose");
 
 const postProperty = async (req, res) => {
-  const { name, address, about, price, square_meter, parking_lot, number_of_bedroom } = req.body;
+  const { name, address, about, price, square_meter, parking_lot, number_of_bedroom, features } = req.body;
   try {
 
     if (!req.files || req.files.length < 1) return res.status(402).json({ error: 'Upload property image(s) or video(s)', success: false });
@@ -41,7 +41,7 @@ const postProperty = async (req, res) => {
       return res.status(402).json({ error: 'There was an error uploading your images', success: false, errMsg: uploadError });
     }
 
-    const details = { name, address, about, price, square_meter, parking_lot, number_of_bedroom, posterId, postedBy:posterRole, images: imageBank };
+    const details = { name, address, about, price, square_meter, parking_lot, number_of_bedroom, posterId, postedBy:posterRole, images: imageBank, features };
     const newProperty = await propertyCreator(details);
 
     if(posterRole == 'realtor') await realtorPropertyAdder(posterId, newProperty);

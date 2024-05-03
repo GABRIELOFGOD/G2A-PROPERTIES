@@ -82,7 +82,7 @@ const adminProfile = async (req, res) => {
     const isAdmin = cookie.split("=")[0]
     const adminCookie = cookie.split("=")[1]
 
-    if(isAdmin != 'admin') return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
+    if(isAdmin != 'G2a') return res.status(402).json({error: 'Authentication failed, please login and try again', success: false})
 
     jwt.verify(adminCookie, process.env.SECRET_KEY, async (err, decodedToken) => {
       if(err) return res.status(402).json({error: 'Authentication failed, please login and try again', success: false, errMsg: err})
@@ -125,4 +125,19 @@ const updateAdminData = async (req, res) => {
   }
 }
 
-module.exports = { adminRegistration, adminLogin, adminProfile, updateAdminData, logoutAdmin }
+const adminById = async(req, res) => {
+  const { id } = req.params
+  try {
+
+    // console.log(id)
+
+    if(!req.admin) return res.status(402).json({error: 'There is an authentication error', success: false})
+    
+    const theAd = await gettingAdminById(id)
+    res.status(201).json({message: 'This is the single admin requested', success: true, data: theAd})
+  } catch (err) {
+    res.status(501).json({error: 'A server error occur, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err})
+  }
+}
+
+module.exports = { adminRegistration, adminLogin, adminProfile, updateAdminData, logoutAdmin, adminById }

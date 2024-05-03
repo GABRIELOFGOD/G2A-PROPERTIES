@@ -17,7 +17,7 @@ const app = express()
 
 const PORT = process.env.PORT || 4200
 app.use(cors({
-  origin: ['https://g2arealestatecoach.com.ng', 'http://localhost:5173'],
+  origin: ['https://g2arealestatecoach.com.ng', 'http://localhost:5173', 'http://localhost:5174'],
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   credentials: true

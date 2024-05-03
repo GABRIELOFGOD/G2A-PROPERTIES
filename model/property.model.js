@@ -13,6 +13,7 @@ const propertySchema = new mongoose.Schema({
     posterId: mongoose.Types.ObjectId,
     video_url: [String],
     postedBy: String,
+    features: [String],
     status: {
       type: String,
       default: 'pending'
