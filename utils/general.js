@@ -26,9 +26,13 @@ const adminPropertyAdder = (id, property) => Admin.findByIdAndUpdate(id, {
   $addToSet: {properties: property}
 })
 
+const propertyImageAdder = (id, image) => Property.findByIdAndUpdate(id, {
+  $addToSet: {images: image}
+})
+
 const updatingRealtorPassword = (id, password) => Realtor.findByIdAndUpdate(id, {password})
 
 // ===================  PROPERTY UPDATE ======================= //
 const updatePropertyContent = (id, body) => Property.findByIdAndUpdate(id, body)
 
-module.exports = { passwordHasher, salt, passwordCompare, createdToken, realtorPropertyAdder, adminPropertyAdder, updatePropertyContent, emailToken, updatingRealtorPassword }
+module.exports = { passwordHasher, salt, passwordCompare, createdToken, realtorPropertyAdder, adminPropertyAdder, updatePropertyContent, emailToken, updatingRealtorPassword, propertyImageAdder }

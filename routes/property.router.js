@@ -16,9 +16,10 @@ const upload = multer({storage})
 
 router.post('/post', upload.array('file'), propertyPostingAuth, postProperty)
 router.get('/properties', getListedProperties)
-router.route('/inspect/:id').post(propertyInspect).put(propertyPostingAuth, editProperty).get(adminAuth, adminIdentifier, getSingleInspection)
+router.route('/inspect/:id').post(propertyInspect).put(upload.array('file'), propertyPostingAuth, editProperty).get(adminAuth, adminIdentifier, getSingleInspection)
 router.route('/list/:id').put(propertyListed).get(getSingleProperty).delete(deleteProperty)
 router.get('/get', adminAuth, adminIdentifier, getAllProperties)
 router.route('/inspect/find/all').get(adminAuth, adminIdentifier, getAllInspectRequest)
+// router.put('/images/:id', editPropertyImage)
 
 module.exports = router

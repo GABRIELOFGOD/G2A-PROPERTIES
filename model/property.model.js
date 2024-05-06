@@ -11,7 +11,7 @@ const propertySchema = new mongoose.Schema({
     parking_lot: Number,
     number_of_bedroom: Number,
     posterId: mongoose.Types.ObjectId,
-    video_url: [String],
+    video_url: String,
     postedBy: String,
     features: [String],
     status: {

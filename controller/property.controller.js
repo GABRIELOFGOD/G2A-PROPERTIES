@@ -1,5 +1,5 @@
 const { propertyCreator, propertyInspectCreator } = require("../config/datasaver.config");
-const { realtorPropertyAdder, adminPropertyAdder, updatePropertyContent } = require("../utils/general");
+const { realtorPropertyAdder, adminPropertyAdder, updatePropertyContent, propertyImageAdder } = require("../utils/general");
 const cloudinary = require('../config/cloudinary.config');
 const { emailValidator, phoneValidator } = require("../utils/validator");
 const { isPropertyExists, gettingRealtorById, propertyByPosterId, gettingInspectionById } = require("../utils/existenceChecker");
@@ -7,7 +7,7 @@ const { listPropertyUpdate, deletePropertyFunction, allPropertiesGet, getAllInsp
 const mongoose = require("mongoose");
 
 const postProperty = async (req, res) => {
-  const { name, address, about, price, square_meter, parking_lot, number_of_bedroom, features } = req.body;
+  const { name, address, about, price, square_meter, parking_lot, number_of_bedroom, features, video_url } = req.body;
   try {
 
     if (!req.files || req.files.length < 1) return res.status(402).json({ error: 'Upload property image(s) or video(s)', success: false });
@@ -41,7 +41,7 @@ const postProperty = async (req, res) => {
       return res.status(402).json({ error: 'There was an error uploading your images', success: false, errMsg: uploadError });
     }
 
-    const details = { name, address, about, price, square_meter, parking_lot, number_of_bedroom, posterId, postedBy:posterRole, images: imageBank, features };
+    const details = { name, address, about, price, square_meter, parking_lot, number_of_bedroom, posterId, postedBy:posterRole, images: imageBank, features, video_url };
     const newProperty = await propertyCreator(details);
 
     if(posterRole == 'realtor') await realtorPropertyAdder(posterId, newProperty);
@@ -197,12 +197,47 @@ const editProperty = async (req, res) => {
       if(isProperty.posterId != req.posterId) return res.status(403).json({error: 'You are not the poster of this property, you cannot perform this operation', success: false})
     }
 
-    const propertyAdjust = await updatePropertyContent(id, req.body)
-    res.status(201).json({message: 'property has been updated successfully', success: true})
+    if(req.files){
+      let images = req.files
+      
+      let imageBank = [];
+
+      let uploadPromises = images.map(image => {
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader.upload(image.path, (err, rel) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(rel.secure_url);
+            }
+          });
+        });
+      });
+
+      try {
+        const uploadedImages = await Promise.all(uploadPromises);
+        imageBank = uploadedImages;
+      } catch (uploadError) {
+        console.error('Error uploading images:', uploadError);
+        return res.status(402).json({ error: 'There was an error uploading your images', success: false, errMsg: uploadError });
+      }
+
+      imageBank.map(async image => {
+        const postInd = await propertyImageAdder(id, image)
+      })
+
+      const propertyAdjust = await updatePropertyContent(id, req.body)
+      res.status(201).json({message: 'property has been updated successfully', success: true})
+      
+    }else{
+      const propertyAdjust = await updatePropertyContent(id, req.body)
+      res.status(201).json({message: 'property has been updated successfully no file', success: true})
+    }
 
   } catch (err) {
     // if(err instanceof CastError) return res.status(403).json({error: 'This is not a valid property from our website', success: false})
     res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+    console.log(err)
   }
 }
 
@@ -235,5 +270,14 @@ const getSingleInspection = async (req, res) => {
     res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
   }
 }
+
+// const editPropertyImage = async (req, res) => {
+//   const { id } = req.params
+//   try {
+    
+//   } catch (err) {
+//     res.status(501).json({ error: 'A server error occurred, kindly retry and if this error persists, kindly reach out to us', success: false, errMsg: err });
+//   }
+// }
 
 module.exports = { postProperty, getAllProperties, propertyInspect, propertyListed, getSingleProperty, deleteProperty, editProperty, getListedProperties, getAllInspectRequest, getSingleInspection };

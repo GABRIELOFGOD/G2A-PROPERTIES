@@ -40,6 +40,7 @@ const createRealtor = async (req, res) => {
         const detail = {
           name, 
           email,
+          phone,
           password: hashedPassword,
           avatar: result.secure_url
         }
@@ -74,7 +75,8 @@ const createRealtor = async (req, res) => {
       const detail = {
         name, 
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        phone
       }
 
       const newRealtor = await RealtorCreator(detail)
