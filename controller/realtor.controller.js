@@ -227,6 +227,7 @@ const updateRealtorPassword = async (req, res) => {
 const realtorProfile = async (req, res) => {
   const cookie = req.headers.cookie
   try {
+    
     if(!cookie) return res.status(402).json({error: 'Please login again', success: false})
     
     const isRealtor = cookie.split("=")[0]
@@ -280,8 +281,7 @@ const realtorUpdateAvatar = async (req, res) => {
   const cookie = req.headers.cookie
   try {
     
-    if(!cookie) return res.status(402).json({error: 'Please login again', success: false})
-
+    if(!cookie) return res.status(400).json({error: 'Please login again', success: false})
     const isRealtor = cookie.split("=")[0]
     const realtorCookie = cookie.split("=")[1]
 
